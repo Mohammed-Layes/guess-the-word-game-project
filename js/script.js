@@ -25,16 +25,33 @@ const message = document.querySelector(".message");
 const playAgainBtn = document.querySelector(".play-again");
 
 // Create another global variable called word and give it the value of "magnolia". 
-const word = "magnolia";
+let word = "magnolia";
 
 // Create another global variable called guessedLetters with an empty array. This array will contain all the letters the player guesses. 
 let guessedLetters = []; 
+
+// Create a global variable called remainingGuesses and set it to a value of 8. The value 8 is the maximum number of guesses the player can make. You can decrease or increase this value to make the game harder or easier for the player! Hint: The value of the remainingGuesses variable will change over time.
+let remainingGuesses = 8;
+
+// Add an async function called getWord() to fetch data from a file at this address: “https://gist.githubusercontent.com/skillcrush-curriculum/7061f1d4d3d5bfe47efbfbcfe42bf57e/raw/5ffc447694486e7dea686f34a6c085ae371b43fe/words.txt”. Hint: You also retrieved data from a file in the school field trip exercise in a previous lesson. The difference here is that you’re fetching data from a text file instead of a JSON file. In the second await statement, use .text() instead of .json(). 
+const getWord = async function () {
+    const response = await fetch("https://gist.githubusercontent.com/skillcrush-curriculum/7061f1d4d3d5bfe47efbfbcfe42bf57e/raw/5ffc447694486e7dea686f34a6c085ae371b43fe/words.txt");
+    const words = await response.text();
+    const wordArray = words.split("\n");
+    const randomIndex = Math.floor(Math.random() * wordArray.length);
+    // word = wordArray[randomIndex].trim();
+    // placeholder(word);
+    word = wordArray[randomIndex].trim();
+    placeholder(word);
+  }; 
+
+
 
 
 // Write a Function to Add Placeholders for Each Letter
 
 // Create and name a function to update the paragraph’s innerText for the “words-in-progress” element with circle symbols (●) to represent each letter in the word. The symbols will stay on the screen until the correct letter is guessed (in a future step). Hint: Copy and paste the ● symbol into your code!
-// const addPlaceholders = function (word) {
+// const placeholder = function (word) {
 //     let placeholder = "";
 //     // const wordArray = word.split("");
 //     // console.log(wordArray);
@@ -46,18 +63,21 @@ let guessedLetters = [];
 // };
 
 // Display our symbols as placeholders for the chosen word's letters
-const addPlaceholders = function (word) {
+const placeholder = function (word) {
+
     const placeholderLetters = [];
     for (const letter of word) {
       console.log(letter);
       placeholderLetters.push("●");
     }
     wordInProgress.innerText = placeholderLetters.join("");
+
   };
 
 // Call the function and pass it the word variable as the argument. You should see 8 circle symbols on the screen, one for each letter in the word “magnolia.” Hint: You’ll need to use an array and then join it back to a string using the .join("") method.
-addPlaceholders(word);
-
+// placeholder(word);
+// Call to addPlaceholder(word) is now replaced with call to getWord().
+getWord();
 
 // Add an Event Listener for the Button
 
@@ -132,6 +152,7 @@ const makeGuess = function (letter) {
     } else {
         guessedLetters.push(uppercasedLetter);
         displayGuessedLetter();
+        guessesRemaining(letter);
         displayWordInProgress(guessedLetters);
     }
 
@@ -184,6 +205,37 @@ const displayWordInProgress = function (guessedLetters) {
 
 };
 
+// Create a Function to Count Guesses Remaining
+
+// Create and name a new function that will accept the guess input as a parameter. In the code, place this function before the function that checks if the player won.
+// In the function, grab the word and make it uppercase. Because the player’s guess is uppercase, making the word they’re guessing uppercase will compare letters with the same casing.
+// Find out if the word contains the guess. If it doesn’t include the letter from guess, let the player know that the word doesn’t contain the letter and subtract 1 from their remainingGuesses. If it does contain a letter, let the player know the letter is in the word.
+// Still in the function and below the conditional statement, determine if the remainingGuesses is a value of 0. If they have no guesses remaining, update the message to say the game is over and what the word is. If they have 1 guess, update the span inside the paragraph where the remaining guesses will display to tell the player they have one guess remaining. If they have more than one guess, update the same span element to tell them the number of guesses remaining.
+// In the else clause of your makeGuess function, before the call to the function that will update the word in progress, call your new function to update the remaining guesses and pass it the letter that the player guessed as an argument.
+// Play the game for a few guesses. You should see the number of remaining guesses update on the page. Remember, the number of guesses will only update when you make an incorrect guess.
+
+const guessesRemaining = function (input) {
+
+    const uppercasedWord = word.toUpperCase();
+    const uppercasedInput = input.toUpperCase();
+
+    if (uppercasedWord.includes(uppercasedInput)) {
+        message.innerText = `Nice, the word does contain "${uppercasedInput}"!`
+    } else {
+        message.innerText = `Sorry, the word does not contain "${uppercasedInput}".`
+        remainingGuesses -= 1;
+    }
+
+    if (remainingGuesses === 0) { 
+        message.innerText = `GAME OVER! The word is ${uppercasedWord}.`
+    } else if (remainingGuesses === 1) {
+        guessSpan.innerText = `${remainingGuesses} guess`
+    } else {
+        guessSpan.innerText = `${remainingGuesses} guesses`
+    }
+
+};
+
 // Create a Function to Check If the Player Won
 
 // Create and name a function to check if the player successfully guessed the word and won the game. Begin by verifying if their word in progress matches the word they should guess.
@@ -199,3 +251,6 @@ const ifWordGuessed = function () {
     }
     
 }
+
+
+
