@@ -228,6 +228,7 @@ const guessesRemaining = function (input) {
 
     if (remainingGuesses === 0) { 
         message.innerText = `GAME OVER! The word is ${uppercasedWord}.`
+        startOver();
     } else if (remainingGuesses === 1) {
         guessSpan.innerText = `${remainingGuesses} guess`
     } else {
@@ -247,10 +248,46 @@ const ifWordGuessed = function () {
 
     if (wordInProgress.innerText === word.toUpperCase()) {
         message.classList.add("win");
-        message.innerHTML = `<p class="highlight">You guessed the correct word! Congrats!</p>`
+        message.innerHTML = `<p class="highlight">You guessed the correct word! Congrats!</p>`;
+        startOver();
     }
-    
+
 }
 
+// Create a Function to Hide and Show Elements
 
+// At the bottom of the script.js file, create a function called startOver to hide:
+// the Guess button.
+// the paragraph where the remaining guesses will display.
+// the unordered list where the guessed letters appear. 
+// Use the startOver function to show the button to play again.
+// Call the startOver function when the game is over whether the player wins or loses. Test the game to be sure the Guess button, the paragraph with remaining guesses, and the guessed letters disappear when the player wins or loses. Also, check that the Play Again button appears so that players give the game another try. The Play Again button won’t do anything quite yet, but you’ll get to that next!
 
+const startOver = function () {
+    guessBtn.classList.add("hide");
+    remaining.classList.add("hide");
+    guessedLettersList.classList.add("hide");
+    playAgainBtn.classList.remove("hide");
+};
+
+// Add a Click Event to the Play Again Button
+
+// Add a click event listener for the Play Again button. Remove the class of “win” applied to the message element. Empty the message text and the unordered list where the guessed letters appear.
+// Set the remaining guess back to 8 or whichever number of guesses you decided on.  Set your guessedLetter global variable back to an empty array. Populate the text of the span inside the paragraph where the remaining guesses display with the new amount of guesses.
+// Show the Guess button, the paragraph with remaining guesses, and the guessed letters once more. Hide the Play Again button.
+// Call the getWord() async function that pulls the new word so the player can play again!
+// Test out the game to make sure the click event is working. Congratulations, you’ve programmed a computer game! 🥳 Go ahead and add and commit the changes to your repo.
+
+ playAgainBtn.addEventListener("click", function() {
+    message.classList.remove("win");
+    message.innerHTML = "";
+    guessedLetters.innerHTML = "";
+    remainingGuesses = 8;
+    guessedLetters = [];
+    guessSpan.innerText = "8 guesses";
+    guessBtn.classList.remove("hide");
+    remaining.classList.remove("hide");
+    guessedLettersList.classList.remove("hide");
+    playAgainBtn.classList.add("hide");
+    getWord();
+});
